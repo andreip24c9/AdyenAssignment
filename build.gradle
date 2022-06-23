@@ -1,8 +1,19 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.gradle_build_version = '7.2.1'
-    ext.kotlin_version = "1.6.21"
+    ext {
+        gradle_build_version = '7.2.1'
+        kotlin_version = '1.6.21'
+        compile_sdk = 32
+        min_sdk = 26
+
+        compose_version = "1.2.0-beta03"
+        nav_version = "2.4.2"
+        hilt_version = "2.38.1"
+        hilt_lifecycle = "1.0.0"
+        coil_version = "1.4.0"
+    }
+
     repositories {
         google()
         mavenCentral()

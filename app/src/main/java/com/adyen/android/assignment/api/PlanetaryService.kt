@@ -5,10 +5,12 @@ import com.adyen.android.assignment.api.model.AstronomyPicture
 import com.adyen.android.assignment.api.model.DayAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import java.util.concurrent.TimeUnit
 
 
 interface PlanetaryService {
@@ -31,6 +33,13 @@ interface PlanetaryService {
             Retrofit.Builder()
                 .baseUrl(BuildConfig.NASA_BASE_URL)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(
+                    OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build()
+                )
                 .build()
         }
 
