@@ -1,9 +1,8 @@
 package com.adyen.android.assignment
 
-import com.adyen.android.assignment.api.PlanetaryService
+import com.adyen.android.assignment.di.NetworkModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
 
 
@@ -16,7 +15,8 @@ class PlanetaryServiceTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testResponseCode() = runTest {
-        val response = PlanetaryService.instance.getPictures()
+        val apiService = NetworkModule.provideApiService(NetworkModule.provideConverterFactory())
+        val response = apiService.fetchApods(20, BuildConfig.API_KEY)
         assert(response.isSuccessful)
     }
 }

@@ -9,7 +9,7 @@ buildscript {
 
         compose_version = "1.2.0-beta03"
         nav_version = "2.4.2"
-        hilt_version = "2.38.1"
+        hilt_version = "2.42"
         hilt_lifecycle = "1.0.0"
         coil_version = "1.4.0"
     }
@@ -21,6 +21,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_build_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

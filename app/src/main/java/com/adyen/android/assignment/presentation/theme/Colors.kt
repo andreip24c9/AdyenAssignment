@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.ui.theme
+package com.adyen.android.assignment.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
