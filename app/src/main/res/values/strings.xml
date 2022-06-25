@@ -3,4 +3,7 @@
     <string name="refresh">Refresh</string>
     <string name="unknown_error_title">Oops! Something went wrong.</string>
     <string name="unkown_error_body">Please refresh the page and try again.</string>
+    <string name="apod_list_title">Our Universe</string>
+    <string name="favorites_header_label">Favorites</string>
+    <string name="latest_header_label">Latest</string>
 </resources>

@@ -36,7 +36,7 @@ fun ApodComposable(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp, top = 8.dp),
+                    .padding(start = 32.dp, end = 16.dp, bottom = 12.dp, top = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -72,14 +72,14 @@ fun ApodComposable(
                     Text(
                         text = title,
                         modifier = Modifier.fillMaxWidth(),
-                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
                     )
                     Text(
                         text = subtitle,
                         modifier = Modifier
                             .padding(top = 4.dp)
                             .fillMaxWidth(),
-                        style = TextStyle(fontSize = 16.sp)
+                        style = TextStyle(fontSize = 15.sp)
                     )
                 }
             }
@@ -88,30 +88,42 @@ fun ApodComposable(
 }
 
 @Composable
-fun HeaderComposable(title: String) {
+fun HeaderComposable(titleRes: Int) {
     AdyenTheme {
         Surface {
             Text(
-                text = title,
+                text = LocalContext.current.getString(titleRes),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Medium
+                )
             )
         }
     }
 }
 
-@Preview(showBackground = true, name = "Apod Light Mode")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Apod Dark Mode")
+@Preview(showBackground = true, name = "Apod Cell Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Apod Cell Dark Mode"
+)
 @Composable
 fun ApodPreview() {
     return ApodComposable(imageUrl = "", title = "The Milky way", subtitle = "25/06/2022") {}
 }
 
-@Preview(showBackground = true, name = "Header Light Mode")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Header Dark Mode")
+@Preview(showBackground = true, name = "Header Cell Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Header Cell Dark Mode"
+)
 @Composable
 fun HeaderPreview() {
-    return HeaderComposable(title = "Latest")
+    return HeaderComposable(titleRes = R.string.latest_header_label)
 }
