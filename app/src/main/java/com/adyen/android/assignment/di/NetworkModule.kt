@@ -3,6 +3,7 @@ package com.adyen.android.assignment.di
 import com.adyen.android.assignment.BuildConfig
 import com.adyen.android.assignment.domain.util.DayAdapter
 import com.adyen.android.assignment.network.ApiService
+import com.adyen.android.assignment.network.model.AstronomyPictureDTOMapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -48,5 +49,11 @@ object NetworkModule {
                     .build()
             )
             .build().create(ApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAstronomyPictureMapper() : AstronomyPictureDTOMapper {
+        return AstronomyPictureDTOMapper()
     }
 }
