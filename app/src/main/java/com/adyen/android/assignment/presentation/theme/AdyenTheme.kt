@@ -13,7 +13,7 @@ private val LightThemeColors = lightColorScheme(
     surface = OffWhite,
     onSurface = ContentLight,
     onPrimary = ContentLight,
-    onSecondary = ContentLight,
+    onSecondary = OnSecondaryLight,
     background = OffWhite,
     onBackground = ContentLight
 )
@@ -25,7 +25,7 @@ private val DarkThemeColors = darkColorScheme(
     surface = OffBlack,
     onSurface = ContentDark,
     onPrimary = ContentDark,
-    onSecondary = ContentDark,
+    onSecondary = OnSecondaryDark,
     background = OffBlack,
     onBackground = ContentDark
 )
