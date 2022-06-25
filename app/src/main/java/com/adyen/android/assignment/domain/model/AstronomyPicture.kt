@@ -10,6 +10,7 @@ data class AstronomyPicture(
     val mediaType: String,
     val hdUrl: String?,
     val url: String?,
+    val favorite: Boolean = false
 ) {
 
     enum class MediaType(val value: String) {

@@ -12,7 +12,7 @@ You can verify your API key works by running the `PlanetaryServiceTest`.
 ## Features:
 - [ ] Create a list screen of APODs ![](screens/List Screen.png):
   * Sanitise list to ONLY show images - NOT videos.
-- [ ] Implement ordering for APODs ![](screens/Reorder Dialog.png):
+- [ ] ] ![](screens/Reorder Dialog.png):
   * Order by title - ascending.
   * Order by date - descending.
 - [ ] Show a details screen with more info about a single APOD ![](screens/Detail Screen.png).
