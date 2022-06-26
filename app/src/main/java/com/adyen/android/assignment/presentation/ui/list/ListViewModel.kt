@@ -6,15 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.domain.model.AstronomyPicture
+import com.adyen.android.assignment.network.util.NoConnectivityException
 import com.adyen.android.assignment.presentation.ui.composables.ErrorMessage
 import com.adyen.android.assignment.repository.PlanetaryRepository
 import com.adyen.android.assignment.repository.SettingsRepository
-import com.adyen.android.assignment.repository.SettingsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.net.ConnectException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +29,7 @@ constructor(
     val apodsMap: MutableState<Map<Int, List<AstronomyPicture>>> = mutableStateOf(HashMap())
     val selectedSorting : MutableState<Sorting> = mutableStateOf(Sorting.TITLE)
 
+    var showSortingButton = mutableStateOf(false)
     var listLoader = mutableStateOf(false)
     var initialLoadError: MutableState<ErrorMessage?> = mutableStateOf(null)
 
@@ -63,13 +65,24 @@ constructor(
                 }
                 apodsMap.value = responseMap
                 listLoader.value = false
+                showSortingButton.value = true
             } catch (exception: Exception) {
+                apodsMap.value = mutableMapOf()
                 listLoader.value = false
-                initialLoadError.value = ErrorMessage(
-                    errorImageRes = R.drawable.ic_vector,
-                    titleRes = R.string.unknown_error_title,
-                    bodyRes = R.string.unkown_error_body
-                )
+                showSortingButton.value = false
+                if(exception is NoConnectivityException) {
+                    initialLoadError.value = ErrorMessage(
+                        errorImageRes = R.drawable.ic_no_network,
+                        titleRes = R.string.network_error_title,
+                        bodyRes = R.string.network_error_body
+                    )
+                } else {
+                    initialLoadError.value = ErrorMessage(
+                        errorImageRes = R.drawable.ic_error,
+                        titleRes = R.string.unknown_error_title,
+                        bodyRes = R.string.unkown_error_body
+                    )
+                }
                 cancel()
             }
         }

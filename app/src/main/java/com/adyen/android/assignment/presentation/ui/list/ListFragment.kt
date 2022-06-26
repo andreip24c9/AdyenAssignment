@@ -3,29 +3,22 @@
 package com.adyen.android.assignment.presentation.ui.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.adyen.android.assignment.R
@@ -57,7 +50,7 @@ class ListFragment : Fragment() {
                             CenterAlignedTopAppBar(title = { Text(text = getString(R.string.apod_list_title)) })
                         },
                         floatingActionButton = {
-                            if (viewModel.apodsMap.value.isNotEmpty()) {
+                            if (viewModel.showSortingButton.value) {
                                 val state =
                                     derivedStateOf { scrollState.firstVisibleItemIndex }.value == 0
                                 ExtendableFloatingActionButton(
@@ -148,7 +141,7 @@ class ListFragment : Fragment() {
                                         modifier = Modifier.fillMaxHeight(),
                                         isLoading = isLoading,
                                         error = loadError,
-                                        retryButton = RetryButton(R.string.refresh) { // todo move logic
+                                        retryButton = RetryButton(R.string.retry) {
                                             viewModel.refresh()
                                         }
                                     )

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Android Assignment</string>
-    <string name="refresh">Refresh</string>
+    <string name="retry">Try again</string>
     <string name="unknown_error_title">Oops! Something went wrong.</string>
     <string name="unkown_error_body">Please refresh the page and try again.</string>
     <string name="apod_list_title">Our Universe</string>
@@ -12,4 +12,6 @@
     <string name="order_by_date_label">Order by date</string>
     <string name="order_alert_positive_btn">Apply</string>
     <string name="order_alert_negative_btn">Cancel</string>
+    <string name="network_error_title">No network connection</string>
+    <string name="network_error_body">Please check your network and try again.</string>
 </resources>

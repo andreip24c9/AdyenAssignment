@@ -116,10 +116,10 @@ fun LoadingErrorViewPreview() {
             .fillMaxWidth(),
         isLoading = false,
         error = ErrorMessage(
-            R.drawable.ic_vector,
+            R.drawable.ic_error,
             R.string.unknown_error_title,
             R.string.unkown_error_body
         ),
-        retryButton = RetryButton(R.string.refresh) {}
+        retryButton = RetryButton(R.string.retry) {}
     )
 }
