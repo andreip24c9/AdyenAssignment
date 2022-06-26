@@ -87,14 +87,20 @@ class ListFragment : Fragment() {
 
                                 if (openDialog.value) {
                                     ReorderDialog(
-                                        selectedOptionRes = R.string.order_by_title_label,
+                                        selectedOptionRes = when (viewModel.selectedSorting.value) {
+                                            ListViewModel.Sorting.TITLE -> R.string.order_by_title_label
+                                            ListViewModel.Sorting.DATE -> R.string.order_by_date_label
+                                        },
                                         optionsRes = mutableListOf(
                                             R.string.order_by_title_label,
                                             R.string.order_by_date_label
                                         ),
                                         onDismiss = { openDialog.value = false },
                                         onApply = { optionRes ->
-                                            Log.d("asdfasdf", "onApply: ${getString(optionRes)}")
+                                            when (optionRes) {
+                                                R.string.order_by_title_label -> viewModel.reorderByTitle()
+                                                R.string.order_by_date_label -> viewModel.reorderByDate()
+                                            }
                                         })
                                 }
 

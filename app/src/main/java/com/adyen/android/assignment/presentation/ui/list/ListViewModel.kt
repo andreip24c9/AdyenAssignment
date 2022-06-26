@@ -8,6 +8,8 @@ import com.adyen.android.assignment.R
 import com.adyen.android.assignment.domain.model.AstronomyPicture
 import com.adyen.android.assignment.presentation.ui.composables.ErrorMessage
 import com.adyen.android.assignment.repository.PlanetaryRepository
+import com.adyen.android.assignment.repository.SettingsRepository
+import com.adyen.android.assignment.repository.SettingsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -18,15 +20,27 @@ import javax.inject.Inject
 @HiltViewModel
 class ListViewModel
 @Inject
-constructor(private val planetaryRepository: PlanetaryRepository) : ViewModel() {
+constructor(
+    private val planetaryRepository: PlanetaryRepository,
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
 
-    val apods: MutableState<List<AstronomyPicture>> = mutableStateOf(ArrayList())
     val apodsMap: MutableState<Map<Int, List<AstronomyPicture>>> = mutableStateOf(HashMap())
+    val selectedSorting : MutableState<Sorting> = mutableStateOf(Sorting.TITLE)
 
     var listLoader = mutableStateOf(false)
     var initialLoadError: MutableState<ErrorMessage?> = mutableStateOf(null)
 
     var fetchApodsJob: Job? = null
+
+    enum class Sorting(val value: String) {
+        TITLE("title"),
+        DATE("date");
+
+        companion object {
+            fun fromValue(value: String?) = values().find { it.value == value } ?: TITLE
+        }
+    }
 
     init {
         refresh()
@@ -38,12 +52,16 @@ constructor(private val planetaryRepository: PlanetaryRepository) : ViewModel() 
         fetchApodsJob = viewModelScope.launch {
             try {
                 listLoader.value = true
-                apods.value = fetchApods()
-                apodsMap.value =
-                    fetchApods().groupBy {
-                        if (it.favorite) R.string.favorites_header_label
-                        else R.string.latest_header_label
-                    }
+                val responseMap = fetchApods().groupBy {
+                    if (it.favorite) R.string.favorites_header_label
+                    else R.string.latest_header_label
+                }
+                selectedSorting.value = getSortingParam()
+                when (selectedSorting.value) {
+                    Sorting.TITLE -> responseMap.sortByTitle()
+                    Sorting.DATE -> responseMap.sortByDate()
+                }
+                apodsMap.value = responseMap
                 listLoader.value = false
             } catch (exception: Exception) {
                 listLoader.value = false
@@ -61,7 +79,39 @@ constructor(private val planetaryRepository: PlanetaryRepository) : ViewModel() 
         return planetaryRepository.fetchApodImages(20)
     }
 
+    private fun getSortingParam(): Sorting {
+        return Sorting.fromValue(settingsRepository.getPlanetarySorting())
+    }
+
     private fun cancelAllJobs() {
         fetchApodsJob?.cancel()
     }
+
+    fun reorderByTitle() {
+        selectedSorting.value = Sorting.TITLE
+        settingsRepository.setPlanetarySorting(Sorting.TITLE.value)
+        apodsMap.value.sortByTitle()
+    }
+
+    fun reorderByDate() {
+        selectedSorting.value = Sorting.DATE
+        settingsRepository.setPlanetarySorting(Sorting.DATE.value)
+        apodsMap.value.sortByDate()
+    }
+}
+
+private fun Map<Int, List<AstronomyPicture>>.sortByTitle(): Map<Int, List<AstronomyPicture>> {
+    val map = this as MutableMap
+    map.forEach { (key, value) ->
+        map[key] = value.sortedBy { it.title }
+    }
+    return map
+}
+
+private fun Map<Int, List<AstronomyPicture>>.sortByDate(): Map<Int, List<AstronomyPicture>> {
+    val map = this as MutableMap
+    map.forEach { (key, value) ->
+        map[key] = value.sortedByDescending { it.date }
+    }
+    return map
 }
