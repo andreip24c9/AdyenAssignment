@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
@@ -124,9 +125,7 @@ class ListFragment : Fragment() {
                                                 imageUrl = item.url,
                                                 title = item.title,
                                                 subtitle = DateHelper.formatShortDate(item.date)
-                                            ) {
-                                                // todo open details
-                                            }
+                                            ) { findNavController().navigate(R.id.action_view_detail) }
                                         }
                                     )
                                 }
