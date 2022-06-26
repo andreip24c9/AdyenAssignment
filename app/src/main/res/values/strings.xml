@@ -7,4 +7,9 @@
     <string name="favorites_header_label">Favorites</string>
     <string name="latest_header_label">Latest</string>
     <string name="reorder_list_label">Reorder list</string>
+    <string name="order_alert_title">Reorder list</string>
+    <string name="order_by_title_label">Order by title</string>
+    <string name="order_by_date_label">Order by date</string>
+    <string name="order_alert_positive_btn">Apply</string>
+    <string name="order_alert_negative_btn">Cancel</string>
 </resources>
