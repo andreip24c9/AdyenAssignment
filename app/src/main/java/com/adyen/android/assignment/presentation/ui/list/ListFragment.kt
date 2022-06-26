@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.adyen.android.assignment.R
+import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.ui.composables.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -129,7 +130,7 @@ class ListFragment : Fragment() {
                                             ApodComposable(
                                                 imageUrl = item.url,
                                                 title = item.title,
-                                                subtitle = item.date.toString()
+                                                subtitle = DateHelper.formatShortDate(item.date)
                                             ) {
                                                 // todo open details
                                             }

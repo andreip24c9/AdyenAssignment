@@ -16,7 +16,7 @@ class PlanetaryServiceTest {
     @Test
     fun testResponseCode() = runTest {
         val apiService = NetworkModule.provideApiService(NetworkModule.provideConverterFactory())
-        val response = apiService.fetchApods(20, BuildConfig.API_KEY)
+        val response = apiService.fetchApods(2, BuildConfig.API_KEY)
         assert(response.isNotEmpty())
     }
 }
