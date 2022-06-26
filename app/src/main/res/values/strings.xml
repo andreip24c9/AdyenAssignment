@@ -6,4 +6,5 @@
     <string name="apod_list_title">Our Universe</string>
     <string name="favorites_header_label">Favorites</string>
     <string name="latest_header_label">Latest</string>
+    <string name="reorder_list_label">Reorder list</string>
 </resources>

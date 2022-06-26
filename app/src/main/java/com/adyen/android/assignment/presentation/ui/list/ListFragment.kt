@@ -2,14 +2,25 @@
 
 package com.adyen.android.assignment.presentation.ui.list
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.adyen.android.assignment.R
@@ -33,9 +44,34 @@ class ListFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 AdyenTheme {
+                    val scrollState = rememberLazyListState()
                     Scaffold(
                         topBar = {
                             CenterAlignedTopAppBar(title = { Text(text = getString(R.string.apod_list_title)) })
+                        },
+                        floatingActionButton = {
+                            if (viewModel.apodsMap.value.isNotEmpty()) {
+                                val state =
+                                    derivedStateOf { scrollState.firstVisibleItemIndex }.value == 0
+                                ExtendableFloatingActionButton(
+                                    extended = state,
+                                    text = {
+                                        Text(
+                                            text = stringResource(id = R.string.reorder_list_label),
+                                            color = MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    },
+                                    icon = {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.ic_reorder),
+                                            contentDescription = null
+                                        )
+                                    },
+                                    onClick = {
+
+                                    }
+                                )
+                            }
                         },
                         content = { paddingValues ->
                             Surface(
@@ -47,7 +83,7 @@ class ListFragment : Fragment() {
                                 val isLoading = viewModel.listLoader.value
                                 val apodsMap = viewModel.apodsMap.value
                                 SwipeRefresh(
-                                    state = SwipeRefreshState(isLoading && viewModel.apodsMap.value.isNotEmpty()),
+                                    state = SwipeRefreshState(isLoading && apodsMap.isNotEmpty()),
                                     indicator = { state, trigger ->
                                         SwipeRefreshIndicator(
                                             state = state,
@@ -60,6 +96,7 @@ class ListFragment : Fragment() {
                                     onRefresh = { viewModel.refresh() }) {
                                     GenericVerticalListWithStickyHeaders(
                                         modifier = Modifier.fillMaxHeight(),
+                                        lazyListState = scrollState,
                                         mapItems = apodsMap,
                                         headers = { headerRes ->
                                             HeaderComposable(titleRes = headerRes)
@@ -75,6 +112,11 @@ class ListFragment : Fragment() {
                                         }
                                     )
                                 }
+
+                                Box(contentAlignment = Alignment.BottomCenter) {
+                                    GradientComposable(modifier = Modifier.height(120.dp))
+                                }
+
                                 val loadError = viewModel.initialLoadError.value
                                 if (apodsMap.isEmpty() && isLoading || loadError != null) {
                                     LoadingErrorView(
