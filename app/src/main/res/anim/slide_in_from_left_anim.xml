@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:zAdjustment="bottom">
-    <alpha
-        android:duration="300"
-        android:fromAlpha="0.8"
-        android:toAlpha="1.0" />
-    <translate
-        android:duration="300"
-        android:fromXDelta="-10%"
-        android:fromYDelta="0%"
-        android:toXDelta="0%"
-        android:toYDelta="0%" />
-</set>
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="250"
+    android:fromXDelta="-15%"
+    android:fromYDelta="0%"
+    android:interpolator="@android:anim/accelerate_interpolator"
+    android:toXDelta="0%"
+    android:toYDelta="0%"
+    android:zAdjustment="bottom" />
