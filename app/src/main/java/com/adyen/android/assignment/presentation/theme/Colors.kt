@@ -19,3 +19,7 @@ val OffBlack = Color(0xFF1C1B1F)
 val AccentDark = Color(0xFF4900FF)
 val ContentDark = Color(0xFFE0DDE0)
 val OnSecondaryDark = Color(0xFFFFFFFF)
+
+val Translucent = Color(0x1AFFFFFF)
+
+

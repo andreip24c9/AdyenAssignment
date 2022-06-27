@@ -73,39 +73,13 @@ fun <ItemType> GenericVerticalListWithStickyHeaders(
 )
 @Composable
 fun ApodListPreview() {
-    val mockItems = mutableListOf(
-        AstronomyPicture(
-            "1", "Shooting star", "explanation",
-            LocalDate.now(), "image", null, null, true
-        ),
-
-        AstronomyPicture(
-            "2", "Blood moon", "explanation",
-            LocalDate.now(), "image", null, null
-        ),
-
-        AstronomyPicture(
-            "3", "The Milky way", "explanation",
-            LocalDate.now(), "image", null, null, true
-        ),
-
-        AstronomyPicture(
-            "4", "Gravity's grin", "explanation",
-            LocalDate.now(), "image", null, null
-        ),
-
-        AstronomyPicture(
-            "4", "Gravity's grin", "explanation",
-            LocalDate.now(), "image", null, null
-        )
-    )
+    val mockItems = mutableListOf<AstronomyPicture>()
 
     for (i in 0..20) {
         mockItems.add(
             AstronomyPicture(
                 "mock_id", "Mock Item", "mock_explanation",
-                LocalDate.now(), "image", null,
-                "https://apod.nasa.gov/apod/image/2206/NGC6744_chakrabarti1024R.jpg"
+                LocalDate.now(), "image", null, null, i % 4 == 0
             )
         )
     }
