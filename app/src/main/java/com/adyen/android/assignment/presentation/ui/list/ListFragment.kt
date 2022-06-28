@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -26,6 +27,7 @@ import com.adyen.android.assignment.R
 import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.ui.composables.*
+import com.adyen.android.assignment.presentation.ui.details.DetailsFragment
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -125,7 +127,13 @@ class ListFragment : Fragment() {
                                                 imageUrl = item.url,
                                                 title = item.title,
                                                 subtitle = DateHelper.formatShortDate(item.date)
-                                            ) { findNavController().navigate(R.id.action_view_detail) }
+                                            ) {
+                                                val bundle = bundleOf("apod_id" to item.id)
+                                                findNavController().navigate(
+                                                    R.id.action_view_detail,
+                                                    bundle
+                                                )
+                                            }
                                         }
                                     )
                                 }

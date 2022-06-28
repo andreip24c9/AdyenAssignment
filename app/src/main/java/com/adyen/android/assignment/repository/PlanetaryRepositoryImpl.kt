@@ -10,8 +10,15 @@ class PlanetaryRepositoryImpl(
     private val dtoMapper: AstronomyPictureDTOMapper
 ) : PlanetaryRepository {
 
+    private var cachedApods = mutableListOf<AstronomyPicture>()
+
     override suspend fun fetchApodImages(count: Int): List<AstronomyPicture> {
-        return dtoMapper.toDomainList(apiService.fetchApods(count, BuildConfig.API_KEY))
-            .filter { it.mediaType == AstronomyPicture.MediaType.IMAGE.value }
+        cachedApods = dtoMapper.toDomainList(apiService.fetchApods(count, BuildConfig.API_KEY))
+            .filter { it.mediaType == AstronomyPicture.MediaType.IMAGE.value }.toMutableList()
+        return cachedApods
+    }
+
+    override suspend fun fetchApodDetails(id: String): AstronomyPicture? {
+        return cachedApods.firstOrNull { it.id == id }
     }
 }

@@ -15,6 +15,10 @@
             app:exitAnim="@anim/slide_out_left_anim"
             app:popEnterAnim="@anim/slide_in_from_left_anim"
             app:popExitAnim="@anim/slide_out_to_right_anim" />
+        <argument
+            android:name="apod_id"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"

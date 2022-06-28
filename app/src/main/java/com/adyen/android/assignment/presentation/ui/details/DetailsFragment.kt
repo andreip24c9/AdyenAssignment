@@ -4,25 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
-import com.adyen.android.assignment.presentation.ui.composables.ContentComposable
-import com.adyen.android.assignment.presentation.ui.composables.CustomCollapsingToolbarScaffold
-import com.adyen.android.assignment.presentation.ui.composables.DateLikeComposable
+import com.adyen.android.assignment.presentation.ui.composables.*
+import com.adyen.android.assignment.presentation.ui.list.ListFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
+
+    private val args: ListFragmentArgs by navArgs()
+    @Inject
+    lateinit var detailsViewModelAssistedFactory: DetailsViewModel.AssistedFactory
+    private val viewModel: DetailsViewModel by viewModels {
+        DetailsViewModel.provideFactory(detailsViewModelAssistedFactory, args.apodId)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +38,10 @@ class DetailsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 AdyenTheme {
+                    val apod = viewModel.apod.value
                     CustomCollapsingToolbarScaffold(
-                        title = "The Milky way",
-                        imageUrl = "https://apod.nasa.gov/apod/image/2206/NGC6744_chakrabarti1024R.jpg",
+                        title = apod?.title ?: "",
+                        imageUrl = apod?.url,
                         onBackClick = { findNavController().popBackStack() }
                     ) {
                         Column(
@@ -42,23 +49,22 @@ class DetailsFragment : Fragment() {
                                 .verticalScroll(rememberScrollState())
                                 .fillMaxSize()
                         ) {
-                            DateLikeComposable("24/05/1994", true)
-                            ContentComposable(
-                                text = "What does the Andromeda galaxy really look like? The featured image shows how our Milky Way Galaxy's closest major galactic neighbor really appears in a long exposure through Earth's busy skies and with a digital camera that introduces normal imperfections.  The picture is a stack of 223 images, each a 300 second exposure, taken from a garden observatory in Portugal over the past year.  Obvious image deficiencies include bright parallel airplane trails, long and continuous satellite trails, short cosmic ray streaks, and bad pixels.  These imperfections were actually not removed with Photoshop specifically, but rather greatly reduced with a series of computer software packages that included Astro Pixel Processor, DeepSkyStacker, and PixInsight.  All of this work was done not to deceive you with a digital fantasy that has little to do with the real likeness of the Andromeda galaxy (M31), but to minimize Earthly artifacts that have nothing to do with the distant galaxy and so better recreate what M31 really does look like."
-                            )
-                        }
+                            val isLoading = viewModel.listLoader.value
+                            val loadError = viewModel.initialLoadError.value
 
-//                        LazyColumn(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                        ) {
-//                            items(1) {
-//                                DateLikeComposable("24/05/1994", true)
-//                                ContentComposable(
-//                                    text = "What does the Andromeda galaxy really look like? The featured image shows how our Milky Way Galaxy's closest major galactic neighbor really appears in a long exposure through Earth's busy skies and with a digital camera that introduces normal imperfections.  The picture is a stack of 223 images, each a 300 second exposure, taken from a garden observatory in Portugal over the past year.  Obvious image deficiencies include bright parallel airplane trails, long and continuous satellite trails, short cosmic ray streaks, and bad pixels.  These imperfections were actually not removed with Photoshop specifically, but rather greatly reduced with a series of computer software packages that included Astro Pixel Processor, DeepSkyStacker, and PixInsight.  All of this work was done not to deceive you with a digital fantasy that has little to do with the real likeness of the Andromeda galaxy (M31), but to minimize Earthly artifacts that have nothing to do with the distant galaxy and so better recreate what M31 really does look like."
-//                                )
-//                            }
-//                        }
+                            if (apod == null && isLoading || loadError != null) {
+                                LoadingErrorView(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    isLoading = isLoading,
+                                    error = loadError
+                                )
+                            } else {
+                                DateLikeComposable(DateHelper.formatLongDate(apod!!.date), apod.favorite)
+                                ContentComposable(
+                                    text = apod.explanation
+                                )
+                            }
+                        }
                     }
                 }
             }

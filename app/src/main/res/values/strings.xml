@@ -14,4 +14,5 @@
     <string name="order_alert_negative_btn">Cancel</string>
     <string name="network_error_title">No network connection</string>
     <string name="network_error_body">Please check your network and try again.</string>
+    <string name="unkown_adpod_details_error_body">There was an issue retrivieng information about this astronomy picture. Please go back and select a different item.</string>
 </resources>
