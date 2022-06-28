@@ -2,46 +2,30 @@ package com.adyen.android.assignment.presentation.ui.details
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.domain.model.AstronomyPicture
 import com.adyen.android.assignment.network.util.NoConnectivityException
 import com.adyen.android.assignment.presentation.ui.composables.ErrorMessage
 import com.adyen.android.assignment.repository.PlanetaryRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
+@HiltViewModel
 class DetailsViewModel
-@AssistedInject
+@Inject
 constructor(
     private val planetaryRepository: PlanetaryRepository,
-    @Assisted private val apodId: String?,
+    private val state: SavedStateHandle,
 ) : ViewModel() {
 
-    @dagger.assisted.AssistedFactory
-    interface AssistedFactory {
-        fun create(apodId: String): DetailsViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: AssistedFactory,
-            apodId: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(apodId) as T
-            }
-        }
-    }
-
-
-    //    var apodId: MutableState<String> = mutableStateOf("")
+    val apodId = state.get<String>("apod_id")
     val apod: MutableState<AstronomyPicture?> = mutableStateOf(null)
 
     var listLoader = mutableStateOf(false)

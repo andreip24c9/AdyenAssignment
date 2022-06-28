@@ -12,23 +12,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.navArgs
 import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.ui.composables.*
-import com.adyen.android.assignment.presentation.ui.list.ListFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
-    private val args: ListFragmentArgs by navArgs()
-    @Inject
-    lateinit var detailsViewModelAssistedFactory: DetailsViewModel.AssistedFactory
-    private val viewModel: DetailsViewModel by viewModels {
-        DetailsViewModel.provideFactory(detailsViewModelAssistedFactory, args.apodId)
-    }
+    private val viewModel : DetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
