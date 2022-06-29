@@ -1,5 +1,6 @@
 package com.adyen.android.assignment.presentation.ui.list
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -105,7 +106,8 @@ constructor(
         }
     }
 
-    private suspend fun fetchApods(): List<AstronomyPicture> {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    suspend fun fetchApods(): List<AstronomyPicture> {
         return planetaryRepository.fetchApodImages()
     }
 

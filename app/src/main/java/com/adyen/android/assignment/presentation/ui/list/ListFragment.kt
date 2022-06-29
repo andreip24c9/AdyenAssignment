@@ -35,7 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ListFragment : Fragment() {
 
-    private val viewModel: ListViewModel by viewModels()
+    val viewModel: ListViewModel by viewModels()
 
     override fun onResume() {
         super.onResume()

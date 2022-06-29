@@ -1,5 +1,6 @@
 package com.adyen.android.assignment.presentation.ui.details
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,7 @@ constructor(
     private val state: SavedStateHandle,
 ) : ViewModel() {
 
-    val apodId = state.get<String>("apod_id")
+    var apodId = state.get<String>("apod_id")
     val apod = mutableStateOf<AstronomyPicture?>(null)
     val isFavorite = mutableStateOf(false)
 
@@ -37,7 +38,7 @@ constructor(
         refresh()
     }
 
-    private fun refresh() {
+    fun refresh() {
         cancelAllJobs()
         initialLoadError.value = null
         fetchApodDetailsJob = viewModelScope.launch {
@@ -74,8 +75,9 @@ constructor(
         }
     }
 
-    private suspend fun fetchApodDetails(): AstronomyPicture? {
-        return apodId?.let { planetaryRepository.fetchApodDetails(apodId) }
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    suspend fun fetchApodDetails(): AstronomyPicture? {
+        return apodId?.let { planetaryRepository.fetchApodDetails(it) }
     }
 
     private fun cancelAllJobs() {
@@ -86,7 +88,7 @@ constructor(
         viewModelScope.launch {
             apodId?.let {
                 isFavorite.value = !isFavorite.value
-                apod.value = planetaryRepository.favoriteApod(apodId, isFavorite.value)
+                apod.value = planetaryRepository.favoriteApod(it, isFavorite.value)
             }
         }
 

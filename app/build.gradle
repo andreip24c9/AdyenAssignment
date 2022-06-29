@@ -29,7 +29,7 @@ android {
         targetSdk rootProject.ext.compile_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.adyen.android.assignment.MyTestRunner"
 
         buildConfigField "String", "NASA_BASE_URL", "\"https://api.nasa.gov\""
     }
@@ -102,6 +102,23 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1"
+
+    // testing hilt
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hilt_version")
+    androidTestAnnotationProcessor ("com.google.dagger:hilt-compiler:$hilt_version")
+    androidTestImplementation  ("com.google.dagger:hilt-android-testing:$hilt_version")
+    testImplementation ("com.google.dagger:hilt-android-testing:$hilt_version")
+    kaptAndroidTest ("com.google.dagger:hilt-compiler:$hilt_version")
+    kaptTest ("com.google.dagger:hilt-compiler:$hilt_version")
+
+    // testing fragment & activity
+    debugImplementation("androidx.fragment:fragment-testing:1.4.1")
+    debugImplementation("androidx.fragment:fragment-ktx:1.4.1")
+    debugImplementation("androidx.test:core-ktx:1.4.0")
+
+    // testing compose
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
 }
 
 kapt {
