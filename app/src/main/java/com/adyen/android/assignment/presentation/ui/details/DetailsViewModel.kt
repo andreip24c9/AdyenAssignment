@@ -1,6 +1,5 @@
 package com.adyen.android.assignment.presentation.ui.details
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -26,10 +25,11 @@ constructor(
 ) : ViewModel() {
 
     val apodId = state.get<String>("apod_id")
-    val apod: MutableState<AstronomyPicture?> = mutableStateOf(null)
+    val apod = mutableStateOf<AstronomyPicture?>(null)
+    val isFavorite = mutableStateOf(false)
 
     var listLoader = mutableStateOf(false)
-    var initialLoadError: MutableState<ErrorMessage?> = mutableStateOf(null)
+    var initialLoadError = mutableStateOf<ErrorMessage?>(null)
 
     private var fetchApodDetailsJob: Job? = null
 
@@ -44,6 +44,7 @@ constructor(
             try {
                 listLoader.value = true
                 apod.value = fetchApodDetails()
+                isFavorite.value = apod.value?.favorite ?: false
                 listLoader.value = false
                 if (apod.value == null) {
                     initialLoadError.value = ErrorMessage(
@@ -79,5 +80,28 @@ constructor(
 
     private fun cancelAllJobs() {
         fetchApodDetailsJob?.cancel()
+    }
+
+    fun onLikeClicked() {
+        apodId?.let {
+            isFavorite.value = !isFavorite.value
+            apod.value = planetaryRepository.favoriteApod(apodId, isFavorite.value)
+        }
+
+
+//        if (apod.value != null) {
+//            val id = apod.value!!.id
+//            val currentFavValue = apod.value!!.favorite
+//            isFavorite.value = !isFavorite.value
+//            apod.value = planetaryRepository.favoriteApod(id, !isFavorite.value)
+//        }
+
+//        apod.value?.let {
+//            apod.value = null
+//            listLoader.value = true
+//            initialLoadError.value = null
+////            val apodTemp = planetaryRepository.favoriteApod(it.id, !it.favorite)
+////            apod.value = apodTemp
+//        }
     }
 }

@@ -11,7 +11,7 @@ buildscript {
         nav_version = "2.4.2"
         hilt_version = "2.42"
         hilt_lifecycle = "1.0.0"
-        coil_version = "1.4.0"
+        coil_version = "2.0.0-rc01"
     }
 
     repositories {

@@ -2,9 +2,13 @@ package com.adyen.android.assignment.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.text.TextStyle
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightThemeColors = lightColorScheme(
     primary = OffWhite,
@@ -36,6 +40,22 @@ fun AdyenTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(colorScheme =  if (darkTheme) DarkThemeColors else LightThemeColors) {
+        // Remember a SystemUiController
+        val systemUiController = rememberSystemUiController()
+        val toolbarColor = MaterialTheme.colorScheme.surface
+        val useDarkIcons = !isSystemInDarkTheme()
+
+        SideEffect {
+            // Update all of the system bar colors to be transparent, and use
+            // dark icons if we're in light theme
+            systemUiController.setSystemBarsColor(
+                color = toolbarColor,
+                darkIcons = useDarkIcons
+            )
+
+            // setStatusBarsColor() and setNavigationBarColor() also exist
+        }
+
         content()
     }
 }

@@ -21,4 +21,10 @@ class PlanetaryRepositoryImpl(
     override suspend fun fetchApodDetails(id: String): AstronomyPicture? {
         return cachedApods.firstOrNull { it.id == id }
     }
+
+    override fun favoriteApod(id: String, shouldFavorite: Boolean): AstronomyPicture? {
+        val apod = cachedApods.firstOrNull { it.id == id } ?: return null
+        apod.favorite = shouldFavorite
+        return apod
+    }
 }

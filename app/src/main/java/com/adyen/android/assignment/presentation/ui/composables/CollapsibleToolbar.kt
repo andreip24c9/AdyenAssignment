@@ -17,13 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
-import coil.compose.rememberImagePainter
+import coil.compose.SubcomposeAsyncImage
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.theme.OffWhite
@@ -66,7 +65,8 @@ fun CustomCollapsingToolbarScaffold(
             state = collapsingToolbarScaffoldState,
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             toolbar = {
-                Image(
+                SubcomposeAsyncImage(
+                    model = imageUrl,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -74,28 +74,27 @@ fun CustomCollapsingToolbarScaffold(
                         .graphicsLayer {
                             alpha = collapsingToolbarScaffoldState.toolbarState.progress
                         },
-                    contentScale = ContentScale.Crop,
-                    painter = rememberImagePainter(
-                        data = imageUrl,
-                        builder = {
-                            val fallback = AppCompatResources.getDrawable(
-                                LocalContext.current,
-                                R.drawable.ic_cloud_error
-                            )
-                            fallback?.setTint(MaterialTheme.colorScheme.onSurface.toArgb())
-
-                            val placeholder = AppCompatResources.getDrawable(
-                                LocalContext.current,
-                                if (LocalInspectionMode.current) R.drawable.galaxy_image_placeholder else R.drawable.ic_cloud_download
-                            )
-                            placeholder?.setTint(MaterialTheme.colorScheme.onSurface.toArgb())
-
-                            crossfade(true)
-                            fallback(fallback)
-                            placeholder(placeholder)
-                        }
-                    ),
-                    contentDescription = null
+                    contentDescription = null,
+                    error = {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_cloud_error),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(
+                                MaterialTheme.colorScheme.onSurface,
+                                BlendMode.SrcIn
+                            ),
+                        )
+                    },
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.padding(80.dp),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    contentScale = ContentScale.Crop
                 )
 
                 Box(
@@ -130,7 +129,12 @@ fun CustomCollapsingToolbarScaffold(
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 38.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        shadow = Shadow(
+                            color = MaterialTheme.colorScheme.background,
+                            offset = Offset.Zero,
+                            blurRadius = 8f
+                        )
                     )
                 )
 

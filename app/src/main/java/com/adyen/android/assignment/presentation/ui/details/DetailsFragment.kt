@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +19,7 @@ import androidx.navigation.findNavController
 import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.ui.composables.*
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,7 +56,9 @@ class DetailsFragment : Fragment() {
                                     error = loadError
                                 )
                             } else {
-                                DateLikeComposable(DateHelper.formatLongDate(apod!!.date), apod.favorite)
+                                DateLikeComposable(DateHelper.formatLongDate(apod!!.date), viewModel.isFavorite.value) {
+                                    viewModel.onLikeClicked()
+                                }
                                 ContentComposable(
                                     text = apod.explanation
                                 )

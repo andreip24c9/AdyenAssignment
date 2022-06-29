@@ -5,4 +5,5 @@ import com.adyen.android.assignment.domain.model.AstronomyPicture
 interface PlanetaryRepository {
     suspend fun fetchApodImages(count: Int) : List<AstronomyPicture>
     suspend fun fetchApodDetails(id: String): AstronomyPicture?
+    fun favoriteApod(id: String, shouldFavorite: Boolean): AstronomyPicture?
 }

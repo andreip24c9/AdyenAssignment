@@ -3,18 +3,24 @@ package com.adyen.android.assignment.presentation.ui.composables
 import android.content.res.Configuration
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 
@@ -43,33 +50,17 @@ fun ApodComposable(
                     .padding(start = 32.dp, end = 16.dp, bottom = 12.dp, top = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = imageUrl,
-                        builder = {
-                            val fallback = AppCompatResources.getDrawable(
-                                LocalContext.current,
-                                R.drawable.ic_cloud_error
-                            )
-                            fallback?.setTint(MaterialTheme.colorScheme.onSurface.toArgb())
-
-                            val placeholder = AppCompatResources.getDrawable(
-                                LocalContext.current,
-                                if (LocalInspectionMode.current) R.drawable.galaxy_image_placeholder else R.drawable.ic_cloud_download
-                            )
-                            placeholder?.setTint(MaterialTheme.colorScheme.onSurface.toArgb())
-
-                            crossfade(true)
-                            fallback(fallback)
-                            placeholder(placeholder)
-                        }
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                AsyncImage(
                     modifier = Modifier
-                        .width(38.dp)
-                        .height(38.dp)
                         .clip(CircleShape)
+                        .height(38.dp)
+                        .width(38.dp),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
                 )
 
                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
@@ -113,7 +104,8 @@ fun HeaderComposable(titleRes: Int) {
 @Composable
 fun DateLikeComposable(
     date: String,
-    isLiked: Boolean
+    isLiked: Boolean,
+    onLikeClicked: () -> Unit
 ) {
     return Surface {
         Row(
@@ -129,7 +121,14 @@ fun DateLikeComposable(
             )
 
             Image(
-                painter = painterResource(id = if (isLiked) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border),
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = false),
+                    onClick = { onLikeClicked() }),
+                painter = painterResource(
+                    id =
+                    if (isLiked) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+                ),
                 contentDescription = null,
                 colorFilter = if (!isLiked) ColorFilter.tint(
                     MaterialTheme.colorScheme.onSurface,
@@ -143,14 +142,14 @@ fun DateLikeComposable(
 @Composable
 fun ContentComposable(text: String) {
     return Surface {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 16.dp),
-                text = text,
-                style = TextStyle(fontSize = 16.sp, lineHeight = 28.sp)
-            )
-        }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 16.dp),
+            text = text,
+            style = TextStyle(fontSize = 16.sp, lineHeight = 28.sp)
+        )
+    }
 }
 
 @Preview(showBackground = true, name = "Apod Cell Light Mode")
@@ -184,7 +183,7 @@ fun HeaderPreview() {
 @Composable
 fun dateComposablePreviewNotLiked() {
     return AdyenTheme {
-        DateLikeComposable("24/05/2018", false)
+        DateLikeComposable("24/05/2018", false) {}
     }
 }
 
@@ -197,7 +196,7 @@ fun dateComposablePreviewNotLiked() {
 @Composable
 fun dateComposablePreviewLiked() {
     return AdyenTheme {
-        DateLikeComposable("24/05/2018", true)
+        DateLikeComposable("24/05/2018", true) {}
     }
 }
 
