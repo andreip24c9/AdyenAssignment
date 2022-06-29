@@ -11,11 +11,11 @@ import com.adyen.android.assignment.presentation.ui.composables.ErrorMessage
 import com.adyen.android.assignment.repository.PlanetaryRepository
 import com.adyen.android.assignment.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import java.net.ConnectException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,13 +27,13 @@ constructor(
 ) : ViewModel() {
 
     val apodsMap: MutableState<Map<Int, List<AstronomyPicture>>> = mutableStateOf(HashMap())
-    val selectedSorting : MutableState<Sorting> = mutableStateOf(Sorting.TITLE)
+    val selectedSorting: MutableState<Sorting> = mutableStateOf(Sorting.TITLE)
 
     var showSortingButton = mutableStateOf(false)
     var listLoader = mutableStateOf(false)
     var initialLoadError: MutableState<ErrorMessage?> = mutableStateOf(null)
 
-    var fetchApodsJob: Job? = null
+    private var fetchApodsJob: Job? = null
 
     enum class Sorting(val value: String) {
         TITLE("title"),
@@ -45,16 +45,33 @@ constructor(
     }
 
     init {
-        refresh()
+        fetchData()
+    }
+
+    fun resumed() {
+        if(apodsMap.value.isEmpty()) return
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            val data = planetaryRepository.fetchApodImages()
+            if(apodsMap.value.flatMap { it.value }.containsAll(data)) return@launch
+            fetchData()
+        }
+        job.start()
     }
 
     fun refresh() {
+        viewModelScope.launch {
+            planetaryRepository.clearNonFavoriteApods()
+            fetchData()
+        }
+    }
+
+    private fun fetchData() {
         cancelAllJobs()
         initialLoadError.value = null
         fetchApodsJob = viewModelScope.launch {
             try {
                 listLoader.value = true
-                val responseMap = fetchApods().groupBy {
+                val responseMap = fetchApods().sortedByDescending { it.favorite }.groupBy {
                     if (it.favorite) R.string.favorites_header_label
                     else R.string.latest_header_label
                 }
@@ -70,7 +87,7 @@ constructor(
                 apodsMap.value = mutableMapOf()
                 listLoader.value = false
                 showSortingButton.value = false
-                if(exception is NoConnectivityException) {
+                if (exception is NoConnectivityException) {
                     initialLoadError.value = ErrorMessage(
                         errorImageRes = R.drawable.ic_no_network,
                         titleRes = R.string.network_error_title,
@@ -88,8 +105,8 @@ constructor(
         }
     }
 
-    suspend fun fetchApods(): List<AstronomyPicture> {
-        return planetaryRepository.fetchApodImages(20)
+    private suspend fun fetchApods(): List<AstronomyPicture> {
+        return planetaryRepository.fetchApodImages()
     }
 
     private fun getSortingParam(): Sorting {

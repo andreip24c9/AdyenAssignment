@@ -41,7 +41,7 @@ fun GradientComposable(modifier: Modifier) {
 @Composable
 fun GradientPreview() {
     return Surface(
-        color = Color.Red,
+        color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier
             .fillMaxSize()
     ) {

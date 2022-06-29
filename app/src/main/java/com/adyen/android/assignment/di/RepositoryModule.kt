@@ -1,5 +1,6 @@
 package com.adyen.android.assignment.di
 
+import com.adyen.android.assignment.local.model.AstronomyPictureDAO
 import com.adyen.android.assignment.network.ApiService
 import com.adyen.android.assignment.network.model.AstronomyPictureDTOMapper
 import com.adyen.android.assignment.repository.PlanetaryRepository
@@ -18,8 +19,9 @@ object RepositoryModule {
     @Provides
     fun providesPlanetaryRepository(
         apiService: ApiService,
-        mapper: AstronomyPictureDTOMapper
+        mapper: AstronomyPictureDTOMapper,
+        dao: AstronomyPictureDAO
     ) : PlanetaryRepository {
-        return PlanetaryRepositoryImpl(apiService, mapper)
+        return PlanetaryRepositoryImpl(apiService, mapper, dao)
     }
 }

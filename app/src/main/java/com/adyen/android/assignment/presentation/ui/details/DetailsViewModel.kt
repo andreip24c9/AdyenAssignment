@@ -83,9 +83,11 @@ constructor(
     }
 
     fun onLikeClicked() {
-        apodId?.let {
-            isFavorite.value = !isFavorite.value
-            apod.value = planetaryRepository.favoriteApod(apodId, isFavorite.value)
+        viewModelScope.launch {
+            apodId?.let {
+                isFavorite.value = !isFavorite.value
+                apod.value = planetaryRepository.favoriteApod(apodId, isFavorite.value)
+            }
         }
 
 

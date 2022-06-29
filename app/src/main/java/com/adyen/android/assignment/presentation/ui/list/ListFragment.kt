@@ -24,10 +24,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.adyen.android.assignment.R
-import com.adyen.android.assignment.domain.util.DateHelper
 import com.adyen.android.assignment.presentation.theme.AdyenTheme
 import com.adyen.android.assignment.presentation.ui.composables.*
-import com.adyen.android.assignment.presentation.ui.details.DetailsFragment
+import com.adyen.android.assignment.presentation.ui.list.components.ApodListWithStickyHeaders
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -38,6 +37,12 @@ class ListFragment : Fragment() {
 
     private val viewModel: ListViewModel by viewModels()
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.resumed()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -115,25 +120,17 @@ class ListFragment : Fragment() {
                                         )
                                     },
                                     onRefresh = { viewModel.refresh() }) {
-                                    GenericVerticalListWithStickyHeaders(
-                                        modifier = Modifier.fillMaxHeight(),
+
+                                    ApodListWithStickyHeaders(
+                                        modifier = Modifier.fillMaxWidth(),
                                         lazyListState = scrollState,
                                         mapItems = apodsMap,
-                                        headers = { headerRes ->
-                                            HeaderComposable(titleRes = headerRes)
-                                        },
-                                        items = { index, item ->
-                                            ApodComposable(
-                                                imageUrl = item.url,
-                                                title = item.title,
-                                                subtitle = DateHelper.formatShortDate(item.date)
-                                            ) {
-                                                val bundle = bundleOf("apod_id" to item.id)
-                                                findNavController().navigate(
-                                                    R.id.action_view_detail,
-                                                    bundle
-                                                )
-                                            }
+                                        onItemClicked = { itemId ->
+                                            val bundle = bundleOf("apod_id" to itemId)
+                                            findNavController().navigate(
+                                                R.id.action_view_detail,
+                                                bundle
+                                            )
                                         }
                                     )
                                 }
