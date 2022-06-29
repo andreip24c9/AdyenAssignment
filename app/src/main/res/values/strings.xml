@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android Assignment</string>
+    <string name="app_name">Apods</string>
     <string name="retry">Try again</string>
     <string name="unknown_error_title">Oops! Something went wrong.</string>
     <string name="unkown_error_body">Please refresh the page and try again.</string>
