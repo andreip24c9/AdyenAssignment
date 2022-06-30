@@ -98,8 +98,11 @@ fun ApodListPreview() {
             ApodComposable(
                 imageUrl = item.url,
                 title = item.title,
-                subtitle = item.date.toString()
-            ) {}
+                subtitle = item.date.toString(),
+                isLiked = false,
+                onLikeClicked = {},
+                onClick = {}
+            )
         }
     )
 }

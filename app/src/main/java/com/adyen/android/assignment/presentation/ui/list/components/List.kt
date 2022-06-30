@@ -26,6 +26,7 @@ fun ApodListWithStickyHeaders(
     modifier: Modifier = Modifier,
     mapItems: Map<Int, List<AstronomyPicture>>,
     lazyListState: LazyListState = rememberLazyListState(),
+    onLikeClicked: (itemId: String, isFavorite: Boolean) -> Unit,
     onItemClicked: (itemId: String) -> Unit
 ) {
     AdyenTheme {
@@ -48,8 +49,11 @@ fun ApodListWithStickyHeaders(
                                 modifier = Modifier.animateItemPlacement(),
                                 imageUrl = item.url,
                                 title = item.title,
-                                subtitle = DateHelper.formatShortDate(item.date)
-                            ) { onItemClicked(item.id) }
+                                subtitle = DateHelper.formatShortDate(item.date),
+                                isLiked = item.favorite,
+                                onLikeClicked = { onLikeClicked(item.id, item.favorite) },
+                                onClick = { onItemClicked(item.id) }
+                            )
                         })
                 }
             }
@@ -82,6 +86,7 @@ fun ApodListPreview() {
     return ApodListWithStickyHeaders(
         modifier = Modifier.fillMaxHeight(),
         mapItems = groupedItems,
+        onLikeClicked = { _, _ -> },
         onItemClicked = {}
     )
 }

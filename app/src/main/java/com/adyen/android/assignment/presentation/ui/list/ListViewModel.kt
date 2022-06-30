@@ -50,10 +50,10 @@ constructor(
     }
 
     fun resumed() {
-        if(apodsMap.value.isEmpty()) return
+        if (apodsMap.value.isEmpty()) return
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             val data = planetaryRepository.fetchApodImages()
-            if(apodsMap.value.flatMap { it.value }.containsAll(data)) return@launch
+            if (apodsMap.value.flatMap { it.value }.containsAll(data)) return@launch
             fetchData()
         }
         job.start()
@@ -129,6 +129,19 @@ constructor(
         selectedSorting.value = Sorting.DATE
         settingsRepository.setPlanetarySorting(Sorting.DATE.value)
         apodsMap.value.sortByDate()
+    }
+
+    fun onLikeClicked(itemId: String, isFavorite: Boolean) {
+        viewModelScope.launch {
+//            apodsMap.value.flatMap { it.value }.first { it.id == itemId }.apply {
+//                planetaryRepository.favoriteApod(itemId, !isFavorite)?.favorite?.let {
+//                    this.favorite = it
+//                }
+////                apod.value = planetaryRepository.favoriteApod(itemId, !isFavorite)
+//            }
+            planetaryRepository.favoriteApod(itemId, !isFavorite)
+            fetchData()
+        }
     }
 }
 

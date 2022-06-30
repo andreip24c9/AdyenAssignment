@@ -1,18 +1,26 @@
 package com.adyen.android.assignment.presentation.ui.list.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +35,9 @@ import com.adyen.android.assignment.presentation.theme.AdyenTheme
 fun ApodComposable(
     modifier: Modifier = Modifier,
     imageUrl: String?, title: String, subtitle: String,
-    onClick: () -> Unit
+    isLiked: Boolean,
+    onClick: () -> Unit,
+    onLikeClicked: () -> Unit
 ) {
     AdyenTheme {
         Surface(modifier.selectable(selected = true, onClick = onClick)) {
@@ -35,35 +45,57 @@ fun ApodComposable(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 32.dp, end = 16.dp, bottom = 12.dp, top = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .height(38.dp)
-                        .width(38.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
-
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                    Text(
-                        text = title,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                    )
-                    Text(
-                        text = subtitle,
+                Row(modifier = Modifier.weight(1f)) {
+                    AsyncImage(
                         modifier = Modifier
-                            .padding(top = 4.dp)
-                            .fillMaxWidth(),
-                        style = TextStyle(fontSize = 15.sp)
+                            .clip(CircleShape)
+                            .height(38.dp)
+                            .width(38.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
                     )
+
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .wrapContentWidth()
+                    ) {
+                        Text(
+                            text = title,
+                            modifier = Modifier.wrapContentWidth(),
+                            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        )
+                        Text(
+                            text = subtitle,
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(top = 4.dp),
+                            style = TextStyle(fontSize = 15.sp)
+                        )
+                    }
                 }
+                Image(
+                    modifier = Modifier.padding(end = 8.dp).clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false),
+                        onClick = { onLikeClicked() }),
+                    painter = painterResource(
+                        id =
+                        if (isLiked) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+                    ),
+                    contentDescription = null,
+                    colorFilter = if (!isLiked) ColorFilter.tint(
+                        MaterialTheme.colorScheme.onSurface,
+                        BlendMode.SrcIn
+                    ) else null
+                )
             }
         }
     }
@@ -97,7 +129,13 @@ fun HeaderComposable(titleRes: Int) {
 )
 @Composable
 fun ApodPreview() {
-    return ApodComposable(imageUrl = "", title = "The Milky way", subtitle = "25/06/2022") {}
+    return ApodComposable(
+        imageUrl = "",
+        title = "The Milky way",
+        subtitle = "25/06/2022",
+        isLiked = false,
+        onLikeClicked = {},
+        onClick = {})
 }
 
 @Preview(showBackground = true, name = "Header Cell Light Mode")

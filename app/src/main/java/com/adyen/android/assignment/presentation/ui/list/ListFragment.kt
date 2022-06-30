@@ -125,6 +125,9 @@ class ListFragment : Fragment() {
                                         modifier = Modifier.fillMaxWidth(),
                                         lazyListState = scrollState,
                                         mapItems = apodsMap,
+                                        onLikeClicked = { itemId, isFavorite ->
+                                            viewModel.onLikeClicked(itemId,isFavorite)
+                                        },
                                         onItemClicked = { itemId ->
                                             val bundle = bundleOf("apod_id" to itemId)
                                             findNavController().navigate(
